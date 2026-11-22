@@ -89,7 +89,9 @@ module IsEvenAI
     def native_latency_ms(input)
       return nil unless input.is_a?(Integer)
 
-      seconds = Benchmark.realtime { NATIVE_ITERATIONS.times { input.even? } }
+      started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      NATIVE_ITERATIONS.times { input.even? }
+      seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
       seconds * 1000.0 / NATIVE_ITERATIONS
     end
 

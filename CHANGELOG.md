@@ -4,7 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project adheres to
 [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - Unreleased
+## [0.1.1] - 2026-11-22
+
+### Fixed
+
+- Fail to load on Ruby 4.0 and later: `benchmark` is no longer a default gem. The CLI now times itself with
+  `Process.clock_gettime`, so the gem still has zero runtime dependencies.
+
+### Changed
+
+- CI now runs against Ruby 4.0 and 4.1 as well as 3.2 to 3.4.
+
+## [0.1.0] - 2026-11-22
 
 ### Added
 

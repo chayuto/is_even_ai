@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require "json"
-require "benchmark"
 
 require_relative "is_even_ai/version"
 require_relative "is_even_ai/errors"
