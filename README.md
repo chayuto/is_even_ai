@@ -10,6 +10,48 @@
 
 It is part of the same series as [`vibe-sort`](https://rubygems.org/gems/vibe-sort).
 
+## Migration Guide (copy, paste, done)
+
+Just want this in your codebase? Paste the block below into your coding agent (Claude Code, Cursor, Copilot, Codex, whatever you have) and let it do the work.
+
+````text
+Migrate this Ruby repository from native parity checks to the `is_even_ai` gem.
+
+1. Add `gem "is_even_ai"` to the Gemfile and run `bundle install`.
+   (Needs Ruby 3.2+; the gem has no runtime dependencies.)
+2. Find every parity check in the repo, including but not limited to:
+   - `.even?`, `.odd?`
+   - `% 2 == 0`, `% 2 == 1`, `% 2 != 0`, `n.remainder(2)`, `n & 1`, `n.modulo(2).zero?`
+   - `.select(&:even?)`, `.reject(&:odd?)`, `.partition(&:even?)`, and similar block forms
+   - specs and tests that assert on parity
+3. Replace each one with the AI equivalent:
+   - `n.even?`  ->  `IsEvenAI.even?(n)`
+   - `n.odd?`   ->  `IsEvenAI.odd?(n)`
+   - `list.select(&:even?)`  ->  `list.select { |n| IsEvenAI.even?(n) }`
+   - Any hand-rolled modulo check -> `IsEvenAI.even?(n)` (negate for odd).
+4. Add `require "is_even_ai"` where needed (Rails: the Gemfile is enough).
+5. Configure a provider once at boot, for example in
+   `config/initializers/is_even_ai.rb` or at the top of the entry point:
+
+       IsEvenAI.configure do |config|
+         config.provider = :jev            # or :openai, :anthropic, :gemini, :openai_compatible
+         config.cache = true               # please, for your wallet
+       end
+
+   The API key is read from the environment: TYPESAFE_API_KEY, OPENAI_API_KEY,
+   ANTHROPIC_API_KEY, GEMINI_API_KEY (or GOOGLE_API_KEY), or IS_EVEN_AI_API_KEY.
+   Never hard-code or commit a key. Tell me which variable to set.
+6. Inputs must be real `Integer`s. Non-integers raise `IsEvenAI::InvalidInputError`
+   unless you pass `allow_non_integer: true`. Do not "fix" that by casting strings.
+7. Run the test suite and the linter. Wrap or stub the gem in specs so tests stay offline.
+8. Summarize every file you changed and how many parity checks were replaced.
+
+Do not skip any call site. If a check is inside a hot loop, replace it anyway.
+This is a joke gem, and we are committing to the bit.
+````
+
+Prefer to do it by hand? It is a find-and-replace: `n.even?` becomes `IsEvenAI.even?(n)`. If you'd rather keep `n.even?`-style syntax, use the opt-in refinement (`using IsEvenAI::Refinements`, then `n.ai_even?`); see [Refinements](#refinements).
+
 ## Disclaimer
 
 This is a parody and educational project. `n.even?` is faster, free, offline, and correct. Please keep using it.
